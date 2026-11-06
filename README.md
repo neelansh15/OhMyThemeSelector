@@ -1,4 +1,15 @@
+<div align="center">
+
 # omts — Oh My Theme Selector
+
+[![Release](https://img.shields.io/github/v/release/neelansh15/OhMyThemeSelector?color=c2410c)](https://github.com/neelansh15/OhMyThemeSelector/releases)
+[![License: MIT](https://img.shields.io/github/license/neelansh15/OhMyThemeSelector)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/neelansh15/OhMyThemeSelector?style=flat)](https://github.com/neelansh15/OhMyThemeSelector/stargazers)
+[![Last commit](https://img.shields.io/github/last-commit/neelansh15/OhMyThemeSelector)](https://github.com/neelansh15/OhMyThemeSelector/commits/main)
+[![Oh My Zsh](https://img.shields.io/badge/Oh%20My%20Zsh-plugin-blue)](https://ohmyz.sh)
+[![Website](https://img.shields.io/badge/website-live-brightgreen)](https://neelansh15.github.io/OhMyThemeSelector/)
+
+</div>
 
 An interactive theme picker for [Oh My Zsh](https://ohmyz.sh). Browse every installed theme, **see each one applied to your real prompt as you move through the list**, and save your pick to `~/.zshrc` — with no shell reload.
 

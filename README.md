@@ -46,7 +46,11 @@ plugins=(git omts)
 omts
 ```
 
-> **Prefer to let an AI do it?** The [website](https://neelansh15.github.io/OhMyThemeSelector/) has a **Copy agent prompt** button. Paste what it copies into Claude, ChatGPT, or any coding agent and it will install omts for you.
+**Prefer to let an AI do it?** Paste this into Claude, ChatGPT, or any coding agent (the [website](https://neelansh15.github.io/OhMyThemeSelector/) has a **Copy agent prompt** button for the same thing):
+
+```text
+Install omts (https://github.com/neelansh15/OhMyThemeSelector) for my Oh My Zsh: git clone it into "${ZSH_CUSTOM:-$ZSH/custom}/plugins/omts" (git pull if it exists), back up ~/.zshrc, add omts to the existing plugins=(...) list without removing anything (edit the target if it's a symlink), check it with zsh -n and restore the backup if it fails, do NOT reload my shell, then tell me to open a new tab and run omts.
+```
 
 <details>
 <summary>Not using the plugins list?</summary>

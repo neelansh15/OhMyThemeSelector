@@ -9,7 +9,7 @@
 #   omts list            list all themes
 #   omts current         print the active theme
 #   omts set <theme>     apply a theme now and save it to ~/.zshrc
-#   omts update          pull the latest version and reload it
+#   omts update          switch to the latest release and reload it
 #   omts help
 
 typeset -g OMTS_VERSION=0.1.0
@@ -80,26 +80,36 @@ _omts_persist() {
   print -P "%F{green}✓%f Saved %B${name}%b to ${zshrc/#$HOME/~} (backup: ${zshrc:t}.omts.bak)"
 }
 
-# git pull the plugin checkout, then reload it into this shell.
+# Switch the plugin checkout to the latest tagged release (vX.Y.Z), then
+# reload it into this shell.
 _omts_update() {
-  local dir=$_OMTS_DIR old new
+  local dir=$_OMTS_DIR oldrev old latest
   if ! command git -C "$dir" rev-parse --git-dir >/dev/null 2>&1; then
     print -u2 "omts: $dir is not a git checkout, so it can't self-update"
     return 1
   fi
-  old=$(command git -C "$dir" rev-parse --short HEAD) || return 1
-  if ! command git -C "$dir" pull --ff-only -q; then
-    print -u2 "omts: git pull failed (local changes or no network?) in $dir"
+  if ! command git -C "$dir" fetch --tags --force -q origin; then
+    print -u2 "omts: could not reach the remote (no network?)"
     return 1
   fi
-  new=$(command git -C "$dir" rev-parse --short HEAD)
-  if [[ $old == $new ]]; then
-    print -P "%F{green}✓%f omts is already up to date (%B$new%b)"
+  latest=$(command git -C "$dir" tag --list 'v[0-9]*' --sort=-v:refname | head -n 1)
+  if [[ -z $latest ]]; then
+    print -u2 "omts: no releases found"
+    return 1
+  fi
+  oldrev=$(command git -C "$dir" rev-parse HEAD)
+  old=$(command git -C "$dir" describe --tags --always)
+  if [[ $oldrev == $(command git -C "$dir" rev-parse "$latest^{commit}") ]]; then
+    print -P "%F{green}✓%f omts is already on the latest release (%B$latest%b)"
     return 0
   fi
-  command git -C "$dir" log --format='  %h %s' "$old..$new"
+  if ! command git -C "$dir" checkout -q "$latest" 2>/dev/null; then
+    print -u2 "omts: could not switch to $latest (local changes in $dir?)"
+    return 1
+  fi
+  command git -C "$dir" log --format='  %h %s' "$oldrev..$latest"
   source "$dir/omts.plugin.zsh"
-  print -P "%F{green}✓%f Updated %B$old%b → %B$new%b and reloaded omts in this shell"
+  print -P "%F{green}✓%f Updated %B$old%b → %B$latest%b and reloaded omts in this shell"
 }
 
 # --------------------------------------------------------------------------
@@ -389,7 +399,7 @@ omts - Oh My Theme Selector
   omts list            list all themes, marking the active one
   omts current         print the active theme
   omts set <theme>     apply a theme now and save it to ~/.zshrc
-  omts update          pull the latest version and reload it
+  omts update          switch to the latest release and reload it
   omts help            show this help
 EOF
       ;;

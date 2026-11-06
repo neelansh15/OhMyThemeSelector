@@ -12,7 +12,7 @@
 #   omts update          switch to the latest release and reload it
 #   omts help
 
-typeset -g OMTS_VERSION=0.1.0
+typeset -g OMTS_VERSION=0.2.0
 typeset -g _OMTS_DIR=${0:A:h}
 
 # --------------------------------------------------------------------------

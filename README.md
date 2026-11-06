@@ -11,7 +11,7 @@ No more opening `.zshrc` in vim, or checking the GitHub wiki for theme names.
 ## Install
 
 ```sh
-git clone https://github.com/neelansh15/OhMyThemeSelector ~/.oh-my-zsh/custom/plugins/omts
+git clone https://github.com/<you>/OhMyThemeSelector ~/.oh-my-zsh/custom/plugins/omts
 ```
 
 Then add `omts` to the plugin list in `~/.zshrc`:

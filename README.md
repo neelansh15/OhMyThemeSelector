@@ -2,76 +2,128 @@
 
 # omts — Oh My Theme Selector
 
-[![Release](https://img.shields.io/github/v/release/neelansh15/OhMyThemeSelector?color=c2410c)](https://github.com/neelansh15/OhMyThemeSelector/releases)
-[![License: MIT](https://img.shields.io/github/license/neelansh15/OhMyThemeSelector)](LICENSE)
-[![Stars](https://img.shields.io/github/stars/neelansh15/OhMyThemeSelector?style=flat)](https://github.com/neelansh15/OhMyThemeSelector/stargazers)
-[![Last commit](https://img.shields.io/github/last-commit/neelansh15/OhMyThemeSelector)](https://github.com/neelansh15/OhMyThemeSelector/commits/main)
-[![Oh My Zsh](https://img.shields.io/badge/Oh%20My%20Zsh-plugin-blue)](https://ohmyz.sh)
-[![Website](https://img.shields.io/badge/website-live-brightgreen)](https://neelansh15.github.io/OhMyThemeSelector/)
+**Pick your Oh My Zsh theme by seeing it.**
+
+[![Release](https://img.shields.io/github/v/release/neelansh15/OhMyThemeSelector?style=flat-square&color=c2410c&labelColor=2b2b2b)](https://github.com/neelansh15/OhMyThemeSelector/releases)
+[![Oh My Zsh](https://img.shields.io/badge/Oh%20My%20Zsh-plugin-1f6feb?style=flat-square&labelColor=2b2b2b)](https://ohmyz.sh)
+[![zsh](https://img.shields.io/badge/zsh-5%2B-2ea043?style=flat-square&labelColor=2b2b2b)](https://www.zsh.org)
+[![License](https://img.shields.io/github/license/neelansh15/OhMyThemeSelector?style=flat-square&color=8957e5&labelColor=2b2b2b)](LICENSE)
+[![Stars](https://img.shields.io/github/stars/neelansh15/OhMyThemeSelector?style=flat-square&color=d29922&labelColor=2b2b2b)](https://github.com/neelansh15/OhMyThemeSelector/stargazers)
+[![Website](https://img.shields.io/badge/website-live-0ea5e9?style=flat-square&labelColor=2b2b2b)](https://neelansh15.github.io/OhMyThemeSelector/)
+
+[Website](https://neelansh15.github.io/OhMyThemeSelector/) · [Install](#install) · [Usage](#usage) · [FAQ](#faq)
 
 </div>
 
-An interactive theme picker for [Oh My Zsh](https://ohmyz.sh). Browse every installed theme, **see each one applied to your real prompt as you move through the list**, and save your pick to `~/.zshrc` — with no shell reload.
+---
 
-No more opening `.zshrc` in vim, or checking the GitHub wiki for theme names.
+Changing your [Oh My Zsh](https://ohmyz.sh) theme normally means opening `~/.zshrc` in an editor, finding `ZSH_THEME`, typing a name you looked up on GitHub, and reloading your shell. Then doing it all again when you don't like it.
 
-## How it works without a reload
+`omts` replaces that with one command. Run `omts`, arrow through your themes, and **your real prompt changes as you move**. Press Enter to keep one.
 
-`omts` is a zsh function that runs inside your current shell, not a separate program. A separate program could never change your running shell's prompt. Moving the selection runs `omz theme use <name>` in your shell, and the preview is your real prompt (git status included). Enter writes `ZSH_THEME` to your `.zshrc`. Esc restores the theme you started with.
+- **Live preview.** Every theme is applied to your actual prompt, git status included. No screenshots, no guessing.
+- **No reload.** Nothing needs restarting, before or after.
+- **Saves for you.** Enter writes the theme to `~/.zshrc`; Esc puts your old one back.
+- **Searchable.** Start typing to filter the list. Your custom themes are included.
 
 ## Install
+
+**Requirements:** [Oh My Zsh](https://ohmyz.sh), zsh 5 or newer, and `git`.
+
+**1. Get the plugin**
 
 ```sh
 git clone https://github.com/neelansh15/OhMyThemeSelector ~/.oh-my-zsh/custom/plugins/omts
 ```
 
-Then add `omts` to the plugin list in `~/.zshrc`:
+**2. Enable it** by adding `omts` to the plugins list in `~/.zshrc`:
 
 ```sh
 plugins=(git omts)
 ```
 
-Or skip the plugin system and source the file after Oh My Zsh loads:
+**3. Open a new terminal tab** (once), then run:
 
 ```sh
-source /path/to/omts.plugin.zsh   # after: source $ZSH/oh-my-zsh.sh
+omts
 ```
 
-Open a new shell once. After that, themes never need a reload.
+> **Prefer to let an AI do it?** The [website](https://neelansh15.github.io/OhMyThemeSelector/) has a **Copy agent prompt** button. Paste what it copies into Claude, ChatGPT, or any coding agent and it will install omts for you.
+
+<details>
+<summary>Not using the plugins list?</summary>
+
+Source the file yourself, after Oh My Zsh loads:
+
+```sh
+source /path/to/omts.plugin.zsh   # place after: source $ZSH/oh-my-zsh.sh
+```
+
+</details>
 
 ## Usage
 
-| Command | |
+Run `omts` to open the selector.
+
+| Key | What it does |
 |---|---|
-| `omts` | open the selector |
-| `omts list` | list themes, marking the active one |
-| `omts current` | print the active theme |
-| `omts set <theme>` | apply now and save to `.zshrc` |
-| `omts update` | switch to the latest [release](../../releases) and reload it in this shell |
-| `omts help` | help |
+| `↑` `↓` (or `Ctrl-N` `Ctrl-P`) | Move through themes. Each one loads live. |
+| `PgUp` `PgDn` `Home` `End` | Jump around |
+| *just type* | Filter by name (`Backspace` to edit, `Ctrl-U` to clear) |
+| `Enter` | Keep this theme and save it to `~/.zshrc` |
+| `Esc` or `Ctrl-C` | Cancel and go back to the theme you started with |
 
-In the selector:
+A `●` marks the theme that is currently saved. A scrollbar and a "37 of 144" counter show where you are in the list.
 
-| Key | Action |
+### Other commands
+
+| Command | What it does |
 |---|---|
-| `↑` / `↓`, `Ctrl-N` / `Ctrl-P` | move (wraps around), loading the theme live |
-| `PgUp` / `PgDn`, `Home` / `End` | jump |
-| *type* | filter by name (`Backspace` / `Ctrl-U` to edit) |
-| `Enter` | keep the theme and save it to `.zshrc` |
-| `Esc` / `Ctrl-C` | cancel and restore the previous theme |
+| `omts list` | List all themes and mark the active one |
+| `omts current` | Print the active theme |
+| `omts set <theme>` | Apply a theme and save it, without the UI |
+| `omts update` | Update to the latest release (see below) |
+| `omts help` | Show help |
 
-A `●` marks the theme currently saved in `.zshrc`. Custom themes in `$ZSH_CUSTOM` are included.
+## Updating
 
-## What it writes
+```sh
+omts update
+```
 
-Only the `ZSH_THEME="..."` line of `~/.zshrc` (or `$ZDOTDIR/.zshrc`). If the line is missing, it is added before `source $ZSH/oh-my-zsh.sh`. Symlinked dotfiles are followed. A backup is saved as `.zshrc.omts.bak` next to it, and nothing is written if the edited file fails `zsh -n`.
+This switches the plugin to the newest [release](https://github.com/neelansh15/OhMyThemeSelector/releases), shows what changed, and reloads omts in your current shell. You don't need a new tab.
 
-## Caveats
+## Uninstall
 
-- Previews load theme files into your running shell. omts clears `ZSH_THEME_*`, `RPROMPT` and the `precmd`/`preexec`/`chpwd` hook lists between previews and restores them on cancel. A theme that changes other global state, such as shell options or aliases, may leave traces until the next shell.
-- Themes that need special fonts (agnoster, powerlevel-style glyphs) render as well as your terminal font allows.
-- Requires zsh 5+ and Oh My Zsh. Terminals without alternate-screen support are not handled.
+1. Remove `omts` from `plugins=(...)` in `~/.zshrc`.
+2. Delete the plugin: `rm -rf ~/.oh-my-zsh/custom/plugins/omts`
+3. Optionally delete `~/.zshrc.omts.bak`, the backup omts made when it last saved.
+
+Your saved theme stays in `~/.zshrc`, so your prompt won't change.
+
+## FAQ
+
+**What does omts change on my system?**
+Only the `ZSH_THEME="..."` line in `~/.zshrc` (or `$ZDOTDIR/.zshrc`), and only when you press Enter or run `omts set`. If that line doesn't exist, it is added just before `source $ZSH/oh-my-zsh.sh`. If your `.zshrc` is a symlink (for example from a dotfiles repo), the real file is edited.
+
+**Is it safe?**
+Before writing, omts copies your file to `.zshrc.omts.bak` next to it. It also checks the edited file with `zsh -n` and refuses to write one that doesn't parse. The backup holds only the version from just before your most recent save, so keep your own copy if you want to preserve an older one.
+
+**`omts: command not found`**
+The plugin isn't loaded yet. Check that `omts` is in `plugins=(...)` and open a new terminal tab.
+
+**`Oh My Zsh does not appear to be loaded`**
+If you source `omts.plugin.zsh` by hand, do it after the `source $ZSH/oh-my-zsh.sh` line in `~/.zshrc`.
+
+**The preview looks wrong or shows odd symbols.**
+Some themes (agnoster and similar) need a patched font such as a Nerd Font or Powerline font. They will look as good as your terminal font allows.
+
+**A theme left something behind after I cancelled.**
+Between previews, omts resets `ZSH_THEME_*` variables, `RPROMPT` and the `precmd`/`preexec`/`chpwd` hooks, and restores them when you cancel. A theme that changes other global state, such as shell options or aliases, may leave traces until you open a new shell.
+
+**How can it change my theme without reloading the shell?**
+A separate program can't touch the prompt of the shell that launched it. `omts` is instead a zsh function running inside your current shell. Moving the selection runs `omz theme use <name>` there, so the preview is your real prompt, and nothing has to be restarted.
 
 ## License
 
-MIT
+[MIT](LICENSE)

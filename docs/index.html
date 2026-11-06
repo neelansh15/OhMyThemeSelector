@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>omts — Oh My Theme Selector</title>
+<meta name="description" content="Pick an Oh My Zsh theme by previewing it live on your real prompt. No editing .zshrc, no shell reload.">
+<style>
+  :root {
+    --bg: #fbfaf7; --fg: #1d1c1a; --muted: #6b675f; --line: #e4e0d6; --card: #fff;
+    --accent: #c2410c; --term-bg: #16151a; --term-fg: #e6e3dc; --term-dim: #8a8696;
+    --g: #5fd38d; --c: #6cc8e8; --r: #f06a6a; --y: #ecc94b; --b: #7aa2f7; --m: #c792ea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #121114; --fg: #ece9e2; --muted: #9a958a; --line: #2a2830; --card: #1a191e; --accent: #fb923c; --term-bg: #0b0b0e; }
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  code, pre, .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 0 20px; }
+  header { padding: 20px 0; display: flex; justify-content: space-between; align-items: center; }
+  header a { color: var(--muted); text-decoration: none; font-size: 15px; }
+  header a:hover { color: var(--fg); }
+  .logo { font-weight: 700; color: var(--fg) !important; letter-spacing: -.01em; }
+  h1 { font-size: clamp(34px, 6vw, 56px); line-height: 1.08; letter-spacing: -.03em; margin: 40px 0 16px; max-width: 14em; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede { font-size: 20px; color: var(--muted); max-width: 36em; margin: 0 0 28px; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 44px; }
+  .btn { display: inline-block; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; border: 1px solid var(--line); color: var(--fg); background: var(--card); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  @media (prefers-color-scheme: dark) { .btn.primary { color: #1a0f05; } }
+
+  /* terminal demo */
+  .term { background: var(--term-bg); color: var(--term-fg); border-radius: 12px; border: 1px solid var(--line); overflow: hidden; box-shadow: 0 20px 50px -20px rgba(0,0,0,.45); }
+  .term-bar { display: flex; gap: 7px; padding: 11px 14px; background: rgba(255,255,255,.05); }
+  .term-bar i { width: 11px; height: 11px; border-radius: 50%; background: #555; display: block; }
+  .term-body { padding: 16px 18px 18px; font-size: 14px; line-height: 1.55; min-height: 330px; }
+  .tl { white-space: pre; overflow: hidden; }
+  .dim { color: var(--term-dim); }
+  .sel { background: var(--term-fg); color: var(--term-bg); }
+  .g{color:var(--g)} .c{color:var(--c)} .r{color:var(--r)} .y{color:var(--y)} .b{color:var(--b)} .m{color:var(--m)}
+  .seg { padding: 0 6px; }
+  .cap { color: var(--muted); font-size: 14px; margin: 10px 2px 0; }
+
+  section { padding: 56px 0 0; }
+  h2 { font-size: 26px; letter-spacing: -.02em; margin: 0 0 18px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; }
+  .card h3 { margin: 0 0 6px; font-size: 17px; }
+  .card p { margin: 0; color: var(--muted); font-size: 15.5px; }
+
+  .code { position: relative; background: var(--term-bg); color: var(--term-fg); border-radius: 10px; padding: 14px 16px; margin: 10px 0 18px; font-size: 14px; overflow-x: auto; }
+  .code pre { margin: 0; }
+  .copy { position: absolute; top: 8px; right: 8px; font: 12px/1 inherit; background: rgba(255,255,255,.1); color: var(--term-fg); border: 0; border-radius: 6px; padding: 6px 9px; cursor: pointer; }
+  .copy:hover { background: rgba(255,255,255,.2); }
+  ol.steps { padding-left: 22px; } ol.steps li { margin-bottom: 4px; }
+  table { border-collapse: collapse; width: 100%; font-size: 15.5px; }
+  td { padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  td:first-child { white-space: nowrap; width: 1%; }
+  kbd { font: 13px ui-monospace, Menlo, monospace; background: var(--card); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 5px; padding: 1px 6px; }
+  footer { margin-top: 72px; padding: 24px 0 40px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14.5px; }
+  footer a { color: inherit; }
+  @media (max-width: 560px) { .term-body { font-size: 12px; padding: 12px; } body { font-size: 16px; } }
+  @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="logo mono" href="#">omts</a>
+    <a href="https://github.com/neelansh15/OhMyThemeSelector">GitHub →</a>
+  </header>
+
+  <h1>Pick your Oh My Zsh theme by <em>seeing it</em>.</h1>
+  <p class="lede">Arrow through every installed theme and watch your real prompt change as you go. Press Enter to save it. No editing <code>.zshrc</code>, no README tab, no shell reload.</p>
+  <div class="cta">
+    <a class="btn primary" href="#install">Install</a>
+    <a class="btn" href="https://github.com/neelansh15/OhMyThemeSelector">View source</a>
+  </div>
+
+  <div class="term" role="img" aria-label="Animated demo: moving through the omts theme list changes the prompt preview">
+    <div class="term-bar"><i></i><i></i><i></i></div>
+    <div class="term-body mono" id="demo"></div>
+  </div>
+  <p class="cap">Simplified recreation. The real thing renders your actual prompt, git status included.</p>
+
+  <section>
+    <h2>Why it's different</h2>
+    <div class="grid">
+      <div class="card"><h3>Live, in your shell</h3><p><code>omts</code> is a function in your current shell, so every theme is genuinely loaded while you browse. It's not a screenshot.</p></div>
+      <div class="card"><h3>No reload</h3><p>Enter keeps the theme you already see and saves it. Esc puts your previous theme back.</p></div>
+      <div class="card"><h3>Safe edits</h3><p>Changes only the <code>ZSH_THEME</code> line, follows symlinked dotfiles, keeps a backup, and refuses to write a file that fails <code>zsh -n</code>.</p></div>
+      <div class="card"><h3>Type to filter</h3><p>Built-in and custom themes in one list. Start typing a name to narrow it down.</p></div>
+    </div>
+  </section>
+
+  <section id="install">
+    <h2>Install</h2>
+    <ol class="steps"><li>Clone it as an Oh My Zsh custom plugin:</li></ol>
+    <div class="code"><button class="copy" data-c="git clone https://github.com/neelansh15/OhMyThemeSelector ~/.oh-my-zsh/custom/plugins/omts">copy</button><pre>git clone https://github.com/neelansh15/OhMyThemeSelector \
+  ~/.oh-my-zsh/custom/plugins/omts</pre></div>
+    <ol class="steps" start="2"><li>Enable it in <code>~/.zshrc</code>:</li></ol>
+    <div class="code"><button class="copy" data-c="plugins=(git omts)">copy</button><pre>plugins=(git omts)</pre></div>
+    <ol class="steps" start="3"><li>Open a new shell once, then run <code>omts</code>. You never need to reload again.</li></ol>
+  </section>
+
+  <section>
+    <h2>Keys &amp; commands</h2>
+    <table>
+      <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>Move through themes, loading each one live</td></tr>
+      <tr><td><kbd>PgUp</kbd> <kbd>PgDn</kbd></td><td>Jump a page</td></tr>
+      <tr><td><i>type</i></td><td>Filter the list by name</td></tr>
+      <tr><td><kbd>Enter</kbd></td><td>Keep the theme and save it to <code>.zshrc</code></td></tr>
+      <tr><td><kbd>Esc</kbd></td><td>Cancel and restore your previous theme</td></tr>
+      <tr><td><code>omts list</code></td><td>List themes, marking the active one</td></tr>
+      <tr><td><code>omts set &lt;theme&gt;</code></td><td>Apply and save without the UI</td></tr>
+    </table>
+  </section>
+
+  <footer>MIT licensed · Requires zsh and <a href="https://ohmyz.sh">Oh My Zsh</a> · <a href="https://github.com/neelansh15/OhMyThemeSelector">Source on GitHub</a></footer>
+</div>
+
+<script>
+(function () {
+  var themes = [
+    { n: "robbyrussell", p: '<span class="g">➜</span>  <span class="c">myapp</span> <span class="b">git:(</span><span class="r">main</span><span class="b">)</span> <span class="y">✗</span> ' },
+    { n: "af-magic", p: '<span class="dim">────────────────────────────────────</span>\n<span class="g">user</span><span class="dim">@</span><span class="g">mac</span> <span class="y">~/myapp</span> <span class="dim">(</span><span class="b">main</span><span class="dim">)</span>$ ' },
+    { n: "agnoster", p: '<span class="seg" style="background:#444">user@mac</span><span class="seg" style="background:#2563eb">~/myapp</span><span class="seg" style="background:#16a34a;color:#001">  main</span> ' },
+    { n: "ys", p: '<span class="dim">#</span> <span class="c">user</span> <span class="dim">@</span> <span class="g">mac</span> <span class="dim">in</span> <span class="y">~/myapp</span> <span class="dim">on</span> <span class="m">git:main</span> <span class="r">x</span> <span class="dim">[10:42:07]</span>\n$ ' },
+    { n: "bira", p: '<span class="g">╭─user@mac</span> <span class="b">{~/myapp}</span> <span class="dim">‹main›</span>\n<span class="g">╰─$</span> ' },
+    { n: "pygmalion", p: '<span class="r">user</span><span class="dim">@</span><span class="y">mac</span><span class="dim">:</span><span class="c">myapp</span><span class="dim">|</span><span class="m">main</span>\n<span class="dim">→</span> ' },
+    { n: "fino", p: '<span class="b">╭─user</span> <span class="dim">at</span> <span class="m">mac</span> <span class="dim">in</span> <span class="g">~/myapp</span> <span class="dim">on</span> <span class="y">git:main</span>\n<span class="b">╰─○</span> ' }
+  ];
+  var el = document.getElementById("demo"), i = 0, still = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function render() {
+    var out = '<div class="tl"><b>Oh My Theme Selector</b>  <span class="dim">· moving the selection loads the theme live</span></div>' +
+              '<div class="tl"><span class="dim">filter: ▏  ' + themes.length + '/' + themes.length + '</span></div>';
+    themes.forEach(function (t, k) {
+      out += '<div class="tl">' + (k === i ? '<span class="sel"> ' + (k === 0 ? '●' : ' ') + ' ' + t.n + '  </span>' : ' ' + (k === 0 ? '<span class="g">●</span>' : ' ') + ' ' + t.n) + '</div>';
+    });
+    out += '<div class="tl dim"> ↑/↓ move · type to filter · Enter keep &amp; save · Esc cancel</div>' +
+           '<div class="tl"> </div><div class="tl"><b>Preview — ' + themes[i].n + '</b></div>' +
+           '<div class="tl">' + themes[i].p + '<span class="sel"> </span></div>';
+    el.innerHTML = out;
+  }
+  render();
+  if (!still) setInterval(function () { i = (i + 1) % themes.length; render(); }, 1700);
+  document.querySelectorAll(".copy").forEach(function (b) {
+    b.addEventListener("click", function () {
+      var done = function () { b.textContent = "copied"; setTimeout(function () { b.textContent = "copy"; }, 1400); };
+      try { navigator.clipboard.writeText(b.dataset.c).then(done); } catch (e) {}
+    });
+  });
+})();
+</script>
+</body>
+</html>

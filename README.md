@@ -36,6 +36,7 @@ Open a new shell once. After that, themes never need a reload.
 | `omts list` | list themes, marking the active one |
 | `omts current` | print the active theme |
 | `omts set <theme>` | apply now and save to `.zshrc` |
+| `omts update` | pull the latest version and reload it in this shell |
 | `omts help` | help |
 
 In the selector:

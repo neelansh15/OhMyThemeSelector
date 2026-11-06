@@ -9,9 +9,11 @@
 #   omts list            list all themes
 #   omts current         print the active theme
 #   omts set <theme>     apply a theme now and save it to ~/.zshrc
+#   omts update          pull the latest version and reload it
 #   omts help
 
 typeset -g OMTS_VERSION=0.1.0
+typeset -g _OMTS_DIR=${0:A:h}
 
 # --------------------------------------------------------------------------
 # helpers
@@ -76,6 +78,28 @@ _omts_persist() {
 
   command cp -p "$zshrc" "$zshrc.omts.bak" && command mv -f "$tmp" "$zshrc" || return 1
   print -P "%F{green}✓%f Saved %B${name}%b to ${zshrc/#$HOME/~} (backup: ${zshrc:t}.omts.bak)"
+}
+
+# git pull the plugin checkout, then reload it into this shell.
+_omts_update() {
+  local dir=$_OMTS_DIR old new
+  if ! command git -C "$dir" rev-parse --git-dir >/dev/null 2>&1; then
+    print -u2 "omts: $dir is not a git checkout, so it can't self-update"
+    return 1
+  fi
+  old=$(command git -C "$dir" rev-parse --short HEAD) || return 1
+  if ! command git -C "$dir" pull --ff-only -q; then
+    print -u2 "omts: git pull failed (local changes or no network?) in $dir"
+    return 1
+  fi
+  new=$(command git -C "$dir" rev-parse --short HEAD)
+  if [[ $old == $new ]]; then
+    print -P "%F{green}✓%f omts is already up to date (%B$new%b)"
+    return 0
+  fi
+  command git -C "$dir" log --format='  %h %s' "$old..$new"
+  source "$dir/omts.plugin.zsh"
+  print -P "%F{green}✓%f Updated %B$old%b → %B$new%b and reloaded omts in this shell"
 }
 
 # --------------------------------------------------------------------------
@@ -355,6 +379,8 @@ omts() {
         return 1
       fi
       omz theme use "$2" && _omts_persist "$2" ;;
+    update|upgrade)
+      _omts_update ;;
     help|-h|--help)
       cat <<'EOF'
 omts - Oh My Theme Selector
@@ -363,6 +389,7 @@ omts - Oh My Theme Selector
   omts list            list all themes, marking the active one
   omts current         print the active theme
   omts set <theme>     apply a theme now and save it to ~/.zshrc
+  omts update          pull the latest version and reload it
   omts help            show this help
 EOF
       ;;
@@ -375,7 +402,7 @@ EOF
 # tab completion
 if (( $+functions[compdef] )); then
   _omts_complete() {
-    local -a cmds=(select list current set help)
+    local -a cmds=(select list current set update help)
     if (( CURRENT == 2 )); then
       _describe 'command' cmds
     elif [[ $words[2] == set ]]; then

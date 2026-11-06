@@ -15,8 +15,6 @@
 
 </div>
 
----
-
 Changing your [Oh My Zsh](https://ohmyz.sh) theme normally means opening `~/.zshrc` in an editor, finding `ZSH_THEME`, typing a name you looked up on GitHub, and reloading your shell. Then doing it all again when you don't like it.
 
 `omts` replaces that with one command. Run `omts`, arrow through your themes, and **your real prompt changes as you move**. Press Enter to keep one.

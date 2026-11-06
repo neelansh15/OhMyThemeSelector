@@ -28,6 +28,11 @@
   .lede { font-size: 20px; color: var(--muted); max-width: 36em; margin: 0 0 28px; }
   .cta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 44px; }
   .btn { display: inline-block; padding: 10px 18px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 16px; border: 1px solid var(--line); color: var(--fg); background: var(--card); }
+  .btn { cursor: pointer; font-family: inherit; line-height: 1.4; }
+  .btn.agent { display: inline-flex; align-items: center; gap: 10px; }
+  .logos { display: inline-flex; }
+  .logos svg { width: 22px; height: 22px; padding: 3px; border-radius: 50%; background: var(--bg); border: 1px solid var(--line); margin-left: -6px; }
+  .logos svg:first-child { margin-left: 0; }
   .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
   @media (prefers-color-scheme: dark) { .btn.primary { color: #1a0f05; } }
 
@@ -76,6 +81,14 @@
   <p class="lede">Arrow through every installed theme and watch your real prompt change as you go. Press Enter to save it. No editing <code>.zshrc</code>, no README tab, no shell reload.</p>
   <div class="cta">
     <a class="btn primary" href="#install">Install</a>
+    <button class="btn agent" id="agent-btn" type="button" title="Copies install instructions you can paste into Claude, ChatGPT, Gemini or any coding agent">
+      <span class="logos" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#d97757" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M12 3l7.8 4.5v9L12 21l-7.8-4.5v-9z"/><path d="M12 3v9l7.8 4.5M12 12L4.2 16.5M19.8 7.5L12 12"/></svg>
+        <svg viewBox="0 0 24 24" fill="#4f8cf7"><path d="M12 2c.6 5.6 4.4 9.4 10 10-5.6.6-9.4 4.4-10 10-.6-5.6-4.4-9.4-10-10 5.6-.6 9.4-4.4 10-10z"/></svg>
+      </span>
+      <span id="agent-label">Copy agent prompt</span>
+    </button>
     <a class="btn" href="https://github.com/neelansh15/OhMyThemeSelector">View source</a>
   </div>
 
@@ -146,6 +159,28 @@
   }
   render();
   if (!still) setInterval(function () { i = (i + 1) % themes.length; render(); }, 1700);
+
+  var PROMPT = [
+    "Install omts (Oh My Theme Selector) for my Oh My Zsh setup. Repo: https://github.com/neelansh15/OhMyThemeSelector",
+    "",
+    "Steps:",
+    "1. Check that Oh My Zsh is installed (the $ZSH directory exists, usually ~/.oh-my-zsh). If it isn't, stop and tell me.",
+    "2. Clone the repo into the custom plugins folder: git clone https://github.com/neelansh15/OhMyThemeSelector \"${ZSH_CUSTOM:-$ZSH/custom}/plugins/omts\" (skip if it already exists; run git pull instead).",
+    "3. Back up ~/.zshrc (or $ZDOTDIR/.zshrc) to .zshrc.bak, then add omts to the existing plugins=(...) list. Keep every plugin already there. If the file is a symlink, edit its target.",
+    "4. Run zsh -n on the edited .zshrc to confirm it still parses. If it fails, restore the backup and tell me.",
+    "5. Don't run exec zsh or otherwise reload my shell. Tell me to open a new terminal tab once, then run omts to try it. Arrow keys load each theme live; Enter saves it; Esc cancels."
+  ].join("\n");
+  var ab = document.getElementById("agent-btn"), al = document.getElementById("agent-label");
+  ab.addEventListener("click", function () {
+    var done = function (ok) { al.textContent = ok ? "Copied — paste it into your agent" : "Copy failed"; setTimeout(function () { al.textContent = "Copy agent prompt"; }, 2200); };
+    var fallback = function () {
+      var t = document.createElement("textarea"); t.value = PROMPT; t.style.position = "fixed"; t.style.opacity = "0";
+      document.body.appendChild(t); t.select(); var ok = false;
+      try { ok = document.execCommand("copy"); } catch (e) {}
+      document.body.removeChild(t); done(ok);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(PROMPT).then(function () { done(true); }, fallback); else fallback();
+  });
   document.querySelectorAll(".copy").forEach(function (b) {
     b.addEventListener("click", function () {
       var done = function () { b.textContent = "copied"; setTimeout(function () { b.textContent = "copy"; }, 1400); };

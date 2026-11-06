@@ -160,18 +160,35 @@ _omts_draw() {
 
   local buf="${E}[H"
   buf+="${B} Oh My Theme Selector${Z}${D}  ·  moving the selection loads the theme live${Z}${E}[K"$'\n'
-  buf+=" ${D}filter:${Z} ${filter}${D}▏${Z}  ${D}${#visible}/${#themes}${Z}${E}[K"$'\n'
+  buf+=" ${D}filter:${Z} ${filter}${D}▏${Z}  ${D}${$(( $#visible ? idx : 0 ))} of ${#visible}${Z}${E}[K"$'\n'
 
-  local i name line
+  # slim scrollbar beside the list, only when the list is longer than the window
+  local -i total=$#visible thumb=0 tpos=0
+  if (( total > R )); then
+    thumb=$(( R * R / total )); (( thumb < 1 )) && thumb=1
+    tpos=$(( (top - 1) * (R - thumb) / (total - R) ))
+  fi
+
+  local i name plain bar
   for (( i = top; i < top + R; i++ )); do
-    if (( i <= $#visible )); then
+    bar=
+    if (( total > R )); then
+      (( i - top >= tpos && i - top < tpos + thumb )) && bar=" ${B}┃${Z}" || bar=" ${D}│${Z}"
+    fi
+    if (( i <= total )); then
       name=${visible[i]}
-      line=" "
-      [[ $name == $orig ]] && line+="${G}●${Z}" || line+=" "
+      plain="   ${name}"
+      plain=${(r:W:)plain}
       if (( i == idx )); then
-        buf+="${RV}${line} ${name}  ${Z}${E}[K"$'\n'
+        if [[ $name == $orig ]]; then
+          buf+="${RV}${plain[1]}${G}●${RV}${plain[3,-1]}${Z}${bar}${E}[K"$'\n'
+        else
+          buf+="${RV}${plain}${Z}${bar}${E}[K"$'\n'
+        fi
+      elif [[ $name == $orig ]]; then
+        buf+="${plain[1]}${G}●${Z}${plain[3,-1]}${bar}${E}[K"$'\n'
       else
-        buf+="${line} ${name}${E}[K"$'\n'
+        buf+="${plain}${bar}${E}[K"$'\n'
       fi
     else
       buf+="${E}[K"$'\n'
@@ -266,6 +283,9 @@ _omts_tui() {
   local E=$'\e' B=$'\e[1m' D=$'\e[2m' RV=$'\e[7m' G=$'\e[32m' Z=$'\e[0m'
   local orig=$ZSH_THEME applied=$ZSH_THEME filter= key ch chosen=
   local rows cols R idx=1 top=1 i
+  local -i W=0
+  for i in $themes; do (( $#i > W )) && W=$#i; done
+  W+=5
   i=${themes[(Ie)$orig]}
   (( i )) && idx=$i
 
